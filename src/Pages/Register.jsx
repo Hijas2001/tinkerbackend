@@ -7,6 +7,9 @@ import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import { Link } from 'react-router-dom'
 import TinkerLogo from '../images/Tinkerspace.png'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { uploadData } from '../services/allAPI';
 
 const style = {
   position: 'absolute',
@@ -22,19 +25,51 @@ const style = {
 
 function Register() {
   const [event, setEvent] = useState('')
-  const [person, setPerson] = useState('')
-  const [options, setOptions] = useState('');
-  const handleOptionChange = (event) => {
-    setOptions(event.target.value);
-  };
-  
-  const handlePersonChange = (event) => {
-    setPerson(event.target.value)
-  }
+  // const [person, setPerson] = useState('')
+  // const [options, setOptions] = useState('');
+
+
+  const [projectDetails, setProjectDetails] = useState({
+    name: "",
+    email: "",
+    gender: "",
+    number: "",
+    person: "",
+    github: ""
+  })
+
+  const [nextPagePath, setNextPagePath] = useState('');
+
   const handleEventChange = (event) => {
     setEvent(event.target.value)
   }
-  
+
+  const submit = async (e) => {
+    e.preventDefault()
+
+    const { name, email, number, github, gender, person } = projectDetails
+    if (!name || !email || !number || !github || !gender || !person) {
+      toast.warning("Please fill the form completely")
+    }
+    else {
+      const response = await uploadData(projectDetails)
+      console.log(projectDetails);
+      if (response.status === 201) {
+        toast.success("Registration Successfull")
+        setTimeout(() => {
+          setNextPagePath('/'); // Replace '/next-page' with the path to your next page
+        }, 5000);
+      }
+      else {
+        toast.error("Something went wrong")
+        console.log(response);
+      }
+    }
+  }
+  if (nextPagePath) {
+    window.location.href = nextPagePath;
+  }
+
   // modal
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -53,11 +88,11 @@ function Register() {
         <br />
         <div className='input-box'>
           <p>Your Full Name</p>
-          <TextField fullWidth label="" variant="standard" />
+          <TextField fullWidth label="" variant="standard" onChange={((e) => setProjectDetails({ ...projectDetails, name: e.target.value }))} />
         </div>
         <div className='input-box'>
           <p>Your e-mail</p>
-          <TextField fullWidth label="" variant="standard" />
+          <TextField fullWidth label="" variant="standard" onChange={((e) => setProjectDetails({ ...projectDetails, email: e.target.value }))} />
         </div>
         <br />
         <div className='radio-group'>
@@ -66,9 +101,9 @@ function Register() {
               <input type="radio"
                 name="purpose"
                 id="option1"
-                value="option1"
-                checked={options === "option1"}
-                onChange={handleOptionChange} />
+                value="male"
+                checked={projectDetails.gender === "male"}
+                onChange={((e) => setProjectDetails({ ...projectDetails, gender: e.target.value }))} />
               <span>He / Him <i class="fa-solid fa-person"></i></span>
             </label>
           </div>
@@ -77,9 +112,9 @@ function Register() {
               <input type="radio"
                 name="purpose"
                 id="option2"
-                value='option2'
-                checked={options === "option2"}
-                onChange={handleOptionChange} />
+                value='female'
+                checked={projectDetails.gender === "female"}
+                onChange={((e) => setProjectDetails({ ...projectDetails, gender: e.target.value }))} />
               <span>She / Her <i class="fa-solid fa-child-dress"></i></span>
             </label>
           </div>
@@ -88,9 +123,9 @@ function Register() {
               <input type="radio"
                 name="purpose"
                 id="option3"
-                value='option3'
-                checked={options === "option3"}
-                onChange={handleOptionChange}
+                value='groups'
+                checked={projectDetails.gender === "groups"}
+                onChange={((e) => setProjectDetails({ ...projectDetails, gender: e.target.value }))}
               /><span>They / Them <i class="fa-solid fa-people-group"></i></span>
             </label>
           </div>
@@ -99,9 +134,9 @@ function Register() {
               <input type="radio"
                 name="purpose"
                 id="option4"
-                value="option4"
-                checked={options === "option4"}
-                onChange={handleOptionChange}
+                value="professional"
+                checked={projectDetails.gender === "professional"}
+                onChange={((e) => setProjectDetails({ ...projectDetails, gender: e.target.value }))}
               /><span>Working Professional / Researcher <i className="fa-solid fa-user-tie"></i></span>
             </label>
           </div>
@@ -111,7 +146,7 @@ function Register() {
         <div>
           <p>Your contact number</p>
           <p style={{ fontWeight: "200", fontSize: "80%" }}>Preferably Whatsapp number <i class="fa-brands fa-whatsapp"></i></p>
-          <TextField label="" variant="standard" />
+          <TextField label="" variant="standard" onChange={((e) => setProjectDetails({ ...projectDetails, number: e.target.value }))} />
         </div>
         <br />
         <div>
@@ -129,9 +164,9 @@ function Register() {
               <input type="radio"
                 name="person"
                 id="person1"
-                value='person1'
-                checked={person === "person1"}
-                onChange={handlePersonChange} />
+                value='student'
+                checked={projectDetails.person === "student"}
+                onChange={((e) => setProjectDetails({ ...projectDetails, person: e.target.value }))} />
               <span> Student</span>
             </label>
           </div>
@@ -140,9 +175,9 @@ function Register() {
               <input type="radio"
                 name="person"
                 id="person2"
-                value='person2'
-                checked={person === "person2"}
-                onChange={handlePersonChange}
+                value='working'
+                checked={projectDetails.person === "working"}
+                onChange={((e) => setProjectDetails({ ...projectDetails, person: e.target.value }))}
               /><span>Working Professional </span>
             </label>
           </div>
@@ -151,9 +186,9 @@ function Register() {
               <input type="radio"
                 name="person"
                 id="person3"
-                value="person3"
-                checked={person === "person3"}
-                onChange={handlePersonChange}
+                value="Entrepreneur"
+                checked={projectDetails.person === "Entrepreneur"}
+                onChange={((e) => setProjectDetails({ ...projectDetails, person: e.target.value }))}
               /><span>Entrepreneur</span>
             </label>
           </div>
@@ -162,9 +197,9 @@ function Register() {
               <input type="radio"
                 name="person"
                 id="person4"
-                value="person4"
-                checked={person === "person4"}
-                onChange={handlePersonChange}
+                value="Freelancer"
+                checked={projectDetails.person === "Freelancer"}
+                onChange={((e) => setProjectDetails({ ...projectDetails, person: e.target.value }))}
               /><span>Freelancer</span>
             </label>
           </div>
@@ -173,15 +208,15 @@ function Register() {
               <input type="radio"
                 name="person"
                 id="person5"
-                value="person5"
-                checked={person === "person5"}
-                onChange={handlePersonChange}
+                value="Other"
+                checked={projectDetails.person === "Other"}
+                onChange={((e) => setProjectDetails({ ...projectDetails, person: e.target.value }))}
               /><span>Other</span>
             </label>
           </div>
           <br />
           {
-            person === "person1" && (
+            projectDetails.person === "student" && (
               <>
                 <div>
                   <p>Enter the domain that you will working on</p>
@@ -196,7 +231,7 @@ function Register() {
             )
           }
           {
-            person === "person2" && (
+            projectDetails.person === "working" && (
               <>
                 <div>
                   <p>Enter the domain that you will working on</p>
@@ -211,7 +246,7 @@ function Register() {
             )
           }
           {
-            person === "person3" && (
+            projectDetails.person === "Entrepreneur" && (
               <>
                 <div>
                   <p>Enter the domain that you will working on</p>
@@ -226,7 +261,7 @@ function Register() {
             )
           }
           {
-            person === "person4" && (
+            projectDetails.person === "Freelancer" && (
               <>
                 <div>
                   <p>Enter the domain that you will working on</p>
@@ -237,7 +272,7 @@ function Register() {
             )
           }
           {
-            person === "person5" && (
+            projectDetails.person === "Other" && (
               <>
                 <div>
                   <p>What do you do?</p>
@@ -305,7 +340,7 @@ function Register() {
           <br />
           <div>
             <p>Share your Github profile link</p>
-            <TextField fullWidth label="" variant="standard" />
+            <TextField fullWidth label="" variant="standard" onChange={((e) => setProjectDetails({ ...projectDetails, github: e.target.value }))} />
           </div>
           <br />
           <div>
@@ -331,7 +366,9 @@ function Register() {
           <TextField fullWidth id="outlined-basic" label="" variant="outlined" className="custom-textfield" />
         </div>
         <br />
-        <button type="submit" className='btn'>Submit</button>
+
+        <button type="submit" className='btn' onClick={submit}>Submit</button>
+
 
         <div>
           <br />
@@ -339,6 +376,8 @@ function Register() {
         </div>
         <br />
       </div>
+      <ToastContainer position="top-center" autoClose={5000} theme="colored"
+      />
     </div>
   )
 }
