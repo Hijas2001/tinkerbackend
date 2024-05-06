@@ -12,7 +12,7 @@ export const commonAPI = async(httpMethod, url, body)=>{
     }
     return await axios(reqConfiq).then((result)=>{
         return result
-    }) .catch((error)=>{
+    }).catch((error)=>{
         return error
     })
 }
