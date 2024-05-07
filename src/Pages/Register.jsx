@@ -32,11 +32,41 @@ function Register() {
   const [projectDetails, setProjectDetails] = useState({
     name: "",
     email: "",
-    gender: "",
+    gender: "mail",
     number: "",
     person: "",
     github: ""
   })
+  const changeHandler = (e) => {
+    setProjectDetails({ ...projectDetails, [e.target.name]: e.target.value });
+  };
+
+  const addProduct = async () => {
+    try {
+        console.log(projectDetails); // Make sure projectDetails is defined and contains data
+
+        const response = await fetch("http://localhost:4000/signup", {
+            method: "POST",
+            headers: {
+              Accept: 'application/form-data',
+                'Content-Type': 'application/json' // Changed Accept to Content-Type
+            },
+            body:JSON.stringify(projectDetails)
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        // Handle response here if needed
+        const responseData = await response.json();
+        console.log(responseData);
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+
 
   const [nextPagePath, setNextPagePath] = useState('');
 
@@ -88,11 +118,11 @@ function Register() {
         <br />
         <div className='input-box'>
           <p>Your Full Name</p>
-          <TextField fullWidth label="" variant="standard" onChange={((e) => setProjectDetails({ ...projectDetails, name: e.target.value }))} />
+          <TextField fullWidth label="" variant="standard"  name='name' value={projectDetails.name} onChange={changeHandler} />
         </div>
         <div className='input-box'>
           <p>Your e-mail</p>
-          <TextField fullWidth label="" variant="standard" onChange={((e) => setProjectDetails({ ...projectDetails, email: e.target.value }))} />
+          <TextField fullWidth label="" variant="standard" name='email' value={projectDetails.email} onChange={changeHandler} />
         </div>
         <br />
         <div className='radio-group'>
@@ -104,7 +134,7 @@ function Register() {
                 value="male"
                 checked={projectDetails.gender === "male"}
                 onChange={((e) => setProjectDetails({ ...projectDetails, gender: e.target.value }))} />
-              <span>He / Him <i class="fa-solid fa-person"></i></span>
+              <span name='gender' value={projectDetails.name} onChange={changeHandler}>He / Him <i class="fa-solid fa-person"></i></span>
             </label>
           </div>
           <div className='options'>
@@ -115,7 +145,7 @@ function Register() {
                 value='female'
                 checked={projectDetails.gender === "female"}
                 onChange={((e) => setProjectDetails({ ...projectDetails, gender: e.target.value }))} />
-              <span>She / Her <i class="fa-solid fa-child-dress"></i></span>
+              <span name='gender' value={projectDetails.name} onChange={changeHandler}>She / Her <i class="fa-solid fa-child-dress"></i></span>
             </label>
           </div>
           <div className='options'>
@@ -126,7 +156,7 @@ function Register() {
                 value='groups'
                 checked={projectDetails.gender === "groups"}
                 onChange={((e) => setProjectDetails({ ...projectDetails, gender: e.target.value }))}
-              /><span>They / Them <i class="fa-solid fa-people-group"></i></span>
+              /><span name='gender' value={projectDetails.name} onChange={changeHandler}>They / Them <i class="fa-solid fa-people-group"></i></span>
             </label>
           </div>
           <div className='options'>
@@ -137,7 +167,7 @@ function Register() {
                 value="professional"
                 checked={projectDetails.gender === "professional"}
                 onChange={((e) => setProjectDetails({ ...projectDetails, gender: e.target.value }))}
-              /><span>Working Professional / Researcher <i className="fa-solid fa-user-tie"></i></span>
+              /><span name='gender' value={projectDetails.name} onChange={changeHandler}>Working Professional / Researcher <i className="fa-solid fa-user-tie"></i></span>
             </label>
           </div>
         </div>
@@ -146,7 +176,7 @@ function Register() {
         <div>
           <p>Your contact number</p>
           <p style={{ fontWeight: "200", fontSize: "80%" }}>Preferably Whatsapp number <i class="fa-brands fa-whatsapp"></i></p>
-          <TextField label="" variant="standard" onChange={((e) => setProjectDetails({ ...projectDetails, number: e.target.value }))} />
+          <TextField label="" variant="standard" name='number' value={projectDetails.number} onChange={changeHandler} />
         </div>
         <br />
         <div>
@@ -367,7 +397,7 @@ function Register() {
         </div>
         <br />
 
-        <button type="submit" className='btn' onClick={submit}>Submit</button>
+        <button type="submit" className='btn' onClick={addProduct}>Submit</button>
 
 
         <div>
