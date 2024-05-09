@@ -33,10 +33,15 @@ function Register() {
     name: "",
     email: "",
     gender: "mail",
+    image:"",
     number: "",
     person: "",
     github: ""
   })
+
+ 
+
+
   const changeHandler = (e) => {
     setProjectDetails({ ...projectDetails, [e.target.name]: e.target.value });
   };
@@ -182,7 +187,7 @@ function Register() {
         <div>
           <label htmlFor="project-img-upload">
             <p>Insert your Photo</p>
-            <input type="file" name="" id="project-img-upload" style={{ display: "none" }} />
+            <input type="file" name="file" id="project-img-upload" style={{ display: "none" }} />
             <button className='upload'><i class="fa-solid fa-upload"></i> Attach  file</button>
           </label>
         </div>
@@ -250,12 +255,12 @@ function Register() {
               <>
                 <div>
                   <p>Enter the domain that you will working on</p>
-                  <TextField fullWidth label="" variant="standard" />
+                  <TextField name='domain' value={projectDetails.domain} onChange={changeHandler} fullWidth label="" variant="standard" />
                 </div>
                 <br />
                 <div>
                   <p>Name of the educational / startup / organization</p>
-                  <TextField fullWidth label="" variant="standard" />
+                  <TextField name='educational' value={projectDetails.educational} onChange={changeHandler}  fullWidth label="" variant="standard" />
                 </div>
               </>
             )
