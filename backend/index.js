@@ -57,7 +57,7 @@ app.post("/upload", upload.single('formimage'), (req, res) => {
 // });
 
 //creating endpoint for registoring the user 
-app.post('/signup',  (req,res) => {
+app.post('/adduser',  (req,res) => {
 console.log(req.body);
     // let check = await Users.findOne({ email: req.body.email })
 
