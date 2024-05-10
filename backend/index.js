@@ -19,7 +19,6 @@ app.use("/",require("./routs/routs"))
 connectDB()
 
 
-
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

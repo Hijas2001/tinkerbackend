@@ -3,6 +3,7 @@ const routes = express.Router()
 const upload= require("../databaseconnection/multerstorage")
 const Users = require("../databaseconnection/schema")
 const jwt = require('jsonwebtoken');
+const { appBarClasses } = require("@mui/material");
 // Upload endpoint
 routes.post("/upload", upload.single('formimage'), (req, res) => {
     const port = 4000; // Assuming your server runs on port 4000
@@ -47,6 +48,10 @@ routes.post('/adduser', async (req, res) => {
     res.json({ success: true, token });
 
 
+})
+
+routes.use("/login",(req,res)=>{
+   console.log(req.body);
 })
 
 
