@@ -1,7 +1,7 @@
 const express = require("express")
 const routes = express.Router()
-const upload= require("../databaseconnection/multerstorage")
-const Users = require("../databaseconnection/schema")
+const upload = require("../databaseconnection/multerstorage")
+const { Users, Attendance } = require("../databaseconnection/schema")
 const jwt = require('jsonwebtoken');
 const { appBarClasses } = require("@mui/material");
 // Upload endpoint
@@ -50,9 +50,44 @@ routes.post('/adduser', async (req, res) => {
 
 })
 
-routes.use("/login",(req,res)=>{
-   console.log(req.body);
+
+routes.post("/login", async (req, res) => {
+    console.log(req.body);
+
+    const attendances = new Attendance({
+        attendance: req.body.attendance,
+        image:image,
+        framework: req.body.framework,
+        domain: req.body.domain,
+        project: req.body.project,
+        doinghere: req.body.doinghere,
+        duration: req.body.duration,
+        tinkerSpaceAssist: req.body.tinkerSpaceAssist,
+    });
+    //  console.log(expireAt);
+    await attendances.save();
+
+    const data = {
+        attend: {
+            id: attendances.id
+        }
+    };
+    const token = jwt.sign(data, 'secret_ecom');
+
+    res.json({ success: true, token });
+
+
 })
+
+routes.get("/getalldata", async (req, res) => {
+    try {
+        const getalldatas = await Users.find({});
+        console.log(getalldatas);
+        res.json(getalldatas); // Return the array directly
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
 
 // Define a simple GET route
@@ -60,4 +95,4 @@ routes.get('/', (req, res) => {
     res.send('Hello World! This is a GET request.');
 });
 
-module.exports=routes;
+module.exports = routes;

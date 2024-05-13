@@ -41,4 +41,17 @@ const Users = mongoose.model('Users', {
 
 });
 
-module.exports=Users;
+
+
+const Attendance = mongoose.model('Attendance', {
+    expireAt: { type: Date, default: Date.now,index: { expires: '2h' }},
+    attendance: String,
+    framework: String,
+    domain: String,
+    project: String,
+    doinghere: String,
+    duration: Number,
+    tinkerSpaceAssist: String
+});
+
+module.exports={Users,Attendance};
