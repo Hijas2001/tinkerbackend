@@ -76,7 +76,7 @@ function Login() {
                         </label>
                     </div>
                     <div className='options'>
-                        <label htmlFor="">
+                        <label htmlFor="option3">
                             <input type="radio"
                                 name="purpose"
                                 id="option3"
@@ -87,7 +87,7 @@ function Login() {
                         </label>
                     </div>
                     <div className='options'>
-                        <label htmlFor="">
+                        <label htmlFor="option4">
                             <input type="radio"
                                 name="purpose"
                                 id="option4"

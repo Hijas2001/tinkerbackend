@@ -7,10 +7,11 @@ import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import { Link } from 'react-router-dom'
 import TinkerLogo from '../images/Tinkerspace.png'
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { uploadData } from '../services/allAPI';
+// import { uploadData } from '../services/allAPI';
 
+import upload_area from "../images/upload.png"
 const style = {
   position: 'absolute',
   top: '50%',
@@ -24,6 +25,7 @@ const style = {
 };
 
 function Register() {
+
   const [event, setEvent] = useState('')
   // const [person, setPerson] = useState('')
   // const [options, setOptions] = useState('');
@@ -33,77 +35,106 @@ function Register() {
     name: "",
     email: "",
     gender: "mail",
-    image:"",
+    image: "",
     number: "",
     person: "",
-    github: ""
+    github: "",
+    assist: "",
+    domain: "",
+    educational: "",
   })
 
- 
 
+  const [image, setImage] = useState(false)
 
+  const imageHandler = (e) => {
+    setImage(e.target.files[0])
+  }
   const changeHandler = (e) => {
     setProjectDetails({ ...projectDetails, [e.target.name]: e.target.value });
   };
 
-  const addProduct = async () => {
-    try {
-        console.log(projectDetails); // Make sure projectDetails is defined and contains data
+  const addProduct = async (e) => {
 
-        const response = await fetch("http://localhost:4000/signup", {
-            method: "POST",
-            headers: {
-              Accept: 'application/form-data',
-                'Content-Type': 'application/json' // Changed Accept to Content-Type
-            },
-            body:JSON.stringify(projectDetails)
+    e.preventDefault()
+
+
+    try {
+          // Filter out empty fields
+    const filteredaccoundDetails = Object.fromEntries(
+      Object.entries(projectDetails).filter(([key, value]) => value !== "")
+    );
+
+
+      console.log(filteredaccoundDetails);
+
+      let responseData;
+      let products = filteredaccoundDetails;
+
+      let forData = new FormData()
+      forData.append('formimage', image)
+
+      await fetch('http://localhost:4000/upload', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          // 'Content-Type': 'application/json'
+        },
+        body: forData,
+      }).then((resp) => resp.json())
+        .then((data) => { responseData = data })
+
+      if (responseData.success) {
+        products.image = responseData.image_url;
+        console.log(products);
+
+      }
+
+      const response = await fetch("http://localhost:4000/adduser", {
+        method: "POST",
+        headers: {
+          Accept: 'application/form-data',
+          'Content-Type': 'application/json' // Changed Accept to Content-Type
+        },
+        body: JSON.stringify(products)
+      })
+        .then((resp) => resp.json())
+        .then((data) => {
+           if(data.success){
+            alert("User Added") 
+            window.location.replace("/users");
+           }else{
+            alert("Failed")
+           }
+          // data.success ? alert("User Added") : alert("Failed")
         });
 
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+       
+      }
 
-        // Handle response here if needed
-        const responseData = await response.json();
-        console.log(responseData);
+      // Handle response here if needed
+      console.log(response);
     } catch (error) {
-        console.error('Error:', error);
+      console.error('Error:', error);
     }
-}
+    
+  }
 
 
 
-  const [nextPagePath, setNextPagePath] = useState('');
+
+
+  // const [nextPagePath, setNextPagePath] = useState('');
 
   const handleEventChange = (event) => {
     setEvent(event.target.value)
   }
 
-  const submit = async (e) => {
-    e.preventDefault()
-
-    const { name, email, number, github, gender, person } = projectDetails
-    if (!name || !email || !number || !github || !gender || !person) {
-      toast.warning("Please fill the form completely")
-    }
-    else {
-      const response = await uploadData(projectDetails)
-      console.log(projectDetails);
-      if (response.status === 201) {
-        toast.success("Registration Successfull")
-        setTimeout(() => {
-          setNextPagePath('/'); // Replace '/next-page' with the path to your next page
-        }, 5000);
-      }
-      else {
-        toast.error("Something went wrong")
-        console.log(response);
-      }
-    }
-  }
-  if (nextPagePath) {
-    window.location.href = nextPagePath;
-  }
+  // if (nextPagePath) {
+  //   window.location.href = nextPagePath;
+  // }
 
   // modal
   const [open, setOpen] = React.useState(false);
@@ -123,7 +154,7 @@ function Register() {
         <br />
         <div className='input-box'>
           <p>Your Full Name</p>
-          <TextField fullWidth label="" variant="standard"  name='name' value={projectDetails.name} onChange={changeHandler} />
+          <TextField fullWidth label="" variant="standard" name='name' value={projectDetails.name} onChange={changeHandler} />
         </div>
         <div className='input-box'>
           <p>Your e-mail</p>
@@ -154,7 +185,7 @@ function Register() {
             </label>
           </div>
           <div className='options'>
-            <label htmlFor="">
+            <label>
               <input type="radio"
                 name="purpose"
                 id="option3"
@@ -165,7 +196,7 @@ function Register() {
             </label>
           </div>
           <div className='options'>
-            <label htmlFor="">
+            <label>
               <input type="radio"
                 name="purpose"
                 id="option4"
@@ -185,10 +216,10 @@ function Register() {
         </div>
         <br />
         <div>
-          <label htmlFor="project-img-upload">
+          <label >
             <p>Insert your Photo</p>
-            <input type="file" name="file" id="project-img-upload" style={{ display: "none" }} />
-            <button className='upload'><i class="fa-solid fa-upload"></i> Attach  file</button>
+            <input onChange={imageHandler} type="file" name="file" style={{ display: "none" }} />
+            <img width={50} src={image ? URL.createObjectURL(image) : upload_area} alt='' className='addproduct-thumnail-img' />
           </label>
         </div>
         <br />
@@ -260,7 +291,7 @@ function Register() {
                 <br />
                 <div>
                   <p>Name of the educational / startup / organization</p>
-                  <TextField name='educational' value={projectDetails.educational} onChange={changeHandler}  fullWidth label="" variant="standard" />
+                  <TextField name='educational' value={projectDetails.educational} onChange={changeHandler} fullWidth label="" variant="standard" />
                 </div>
               </>
             )
@@ -270,12 +301,12 @@ function Register() {
               <>
                 <div>
                   <p>Enter the domain that you will working on</p>
-                  <TextField fullWidth label="" variant="standard" />
+                  <TextField name='domain' value={projectDetails.domain} onChange={changeHandler} fullWidth label="" variant="standard" />
                 </div>
                 <br />
                 <div>
                   <p>Name of the educational / startup / organization</p>
-                  <TextField fullWidth label="" variant="standard" />
+                  <TextField name='educational' value={projectDetails.educational} onChange={changeHandler} fullWidth label="" variant="standard" />
                 </div>
               </>
             )
@@ -285,12 +316,12 @@ function Register() {
               <>
                 <div>
                   <p>Enter the domain that you will working on</p>
-                  <TextField fullWidth label="" variant="standard" />
+                  <TextField name='domain' value={projectDetails.domain} onChange={changeHandler} fullWidth label="" variant="standard" />
                 </div>
                 <br />
                 <div>
                   <p>Name of the educational / startup / organization</p>
-                  <TextField fullWidth label="" variant="standard" />
+                  <TextField name='educational' value={projectDetails.educational} onChange={changeHandler} fullWidth label="" variant="standard" />
                 </div>
               </>
             )
@@ -300,7 +331,7 @@ function Register() {
               <>
                 <div>
                   <p>Enter the domain that you will working on</p>
-                  <TextField fullWidth label="" variant="standard" />
+                  <TextField name='domain' value={projectDetails.domain} onChange={changeHandler} fullWidth label="" variant="standard" />
                 </div>
                 <br />
               </>
@@ -311,12 +342,12 @@ function Register() {
               <>
                 <div>
                   <p>What do you do?</p>
-                  <TextField fullWidth label="" variant="standard" />
+                  <TextField name='whatdoyoudo' value={projectDetails.whatdoyoudo} onChange={changeHandler} fullWidth label="" variant="standard" />
                 </div>
                 <br />
                 <div>
                   <p>Enter the domain that you will working on</p>
-                  <TextField fullWidth label="" variant="standard" />
+                  <TextField name='domain' value={projectDetails.domain} onChange={changeHandler} fullWidth label="" variant="standard" />
                 </div>
               </>
             )
@@ -325,7 +356,7 @@ function Register() {
             <br />
             <p>Are you a Participant of an event happening today?</p>
             <div className='options'>
-              <label htmlFor="">
+              <label>
                 <input type="radio"
                   name="event"
                   id="event-yes"
@@ -335,7 +366,7 @@ function Register() {
                 /><span>Yes</span>
               </label>
               <br />
-              <label htmlFor="">
+              <label>
                 <input type="radio"
                   name="event"
                   id="event-no"
@@ -351,7 +382,7 @@ function Register() {
                   <div>
                     <br />
                     <p>Please mention the Name of the event</p>
-                    <Button onClick={handleOpen} color='primary'><i class="fa-solid fa-plus"> Add</i></Button>
+                    <Button onClick={handleOpen} color='primary'><i className="fa-solid fa-plus"> Add</i></Button>
                     <Modal
                       open={open}
                       onClose={handleClose}
@@ -375,19 +406,19 @@ function Register() {
           <br />
           <div>
             <p>Share your Github profile link</p>
-            <TextField fullWidth label="" variant="standard" onChange={((e) => setProjectDetails({ ...projectDetails, github: e.target.value }))} />
+            <TextField fullWidth label="" variant="standard" name='github' value={projectDetails.github} onChange={changeHandler} />
           </div>
           <br />
           <div>
             <p>Would you like to receive updates from Tinkwespace ?</p>
             <div className='options'>
-              <label htmlFor="">
+              <label>
                 <input type="radio"
                   name="updates"
                 /><span>Yes</span>
               </label>
               <br />
-              <label htmlFor="">
+              <label>
                 <input type="radio"
                   name="updates"
                 /><span>No </span>
@@ -398,12 +429,13 @@ function Register() {
         <br />
         <div>
           <p>How can TinkerSpace assist you in your professional development?</p>
-          <TextField fullWidth id="outlined-basic" label="" variant="outlined" className="custom-textfield" />
+          <TextField name='assist' value={projectDetails.assist} onChange={changeHandler} fullWidth id="outlined-basic" label="" variant="outlined" className="custom-textfield" />
         </div>
         <br />
 
-        <button type="submit" className='btn' onClick={addProduct}>Submit</button>
-
+        {/* <Link to={'/users'}><button type="submit" className='btn' onClick={addProduct}>Submit</button></Link> */}
+        <Link style={{textDecoration:"none"}}  to={'/users'}><div type="submit"  class='btn' onClick={addProduct}>submit</div></Link>
+        
 
         <div>
           <br />

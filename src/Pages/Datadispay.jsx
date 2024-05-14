@@ -1,11 +1,15 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import Profile from '../components/Profile/Profile';
+
+
 
 const Datadispay = () => {
     const [allusers, setAllUsers] = useState([]);
 
     useEffect(() => {
+
         fetch("http://localhost:4000/getalldata")
             .then(response => response.json())
             .then(data => setAllUsers(data))
@@ -13,32 +17,50 @@ const Datadispay = () => {
 
     }, []); // Add dependency array to run useEffect only once
 
+    const ImageWithToggleDiv = ({ item }) => {
+        const [showDiv, setShowDiv] = useState(false);
+    
+        const handleClick = () => {
+            setShowDiv(!showDiv);
+        };
+    
+        return (
+            <div className="imagebar" onClick={handleClick}>
+                <img id="clickableImage" className="imagefield" src={item.image} alt={item.name} />
+                {showDiv && (
+                    <div id="redDiv">
+                        <Profile />
+                    </div>
+                )}
+            </div>
+        );
+    };
+
     return (
-        <div classNameName='datadispay'>
-            <Link style={{textDecoration:"none"}} to={'/register'}><div classNameName='backtoregister'>Back</div></Link>
-            <div classNameName='header'>
+        
+        <div className='datadispay'>
+            <Link style={{ textDecoration: "none" }} to={'/register'}><div className='backtoregister'>Back</div></Link>
+            <div className='header'>
                 <h1>Learners Attendance</h1>
             </div>
 
-            <div classNameName="mainbar">
+            <div className="mainbar">
                 {allusers.map((item, index) => (
                     <div key={index} >
-                        <div classNameName="content">
-                            <div classNameName="imagebar">
-                                <img classNameName='imagefield' src={item.image} alt={item.name} />
+                        <div className="content">
+                            <div className="imagebar">
+                                {/* <img  id="clickableImage"  className='imagefield' src={item.image} alt={item.name} /> */}
+                                <ImageWithToggleDiv item={item} />
                             </div>
-                            <div classNameName="namefield">
+                            <div className="namefield">
                                 <p> {item.name}</p>
-
                             </div>
                             <hr />
-                            <div classNameName="domain">
+                            <div className="domain">
                                 <p> {item.person}</p>
-
                             </div>
-                            <div classNameName="description">
+                            <div className="description">
                                 <p> {item.github}</p>
-
                             </div>
                         </div>
                     </div>
@@ -46,6 +68,7 @@ const Datadispay = () => {
             </div>
         </div>
     );
+    
 };
 
 export default Datadispay;
