@@ -22,8 +22,20 @@ routes.post('/adduser', async (req, res) => {
         return res.status(400).json({ success: false, error: "existing user found with same email address" });
     }
 
+    let products = await Users.find({});
+    let id;
+
+    if (products.length > 0) {
+        let lastProductArray = products.slice(-1);
+        let lastProduct = lastProductArray[0];
+        id = lastProduct.id + 1;
+    } else {
+        id = 1; // Set id to 1 if no products exist
+    }
+
 
     const user = new Users({
+        id:id,
         name: req.body.name,
         email: req.body.email,
         gender: req.body.gender,

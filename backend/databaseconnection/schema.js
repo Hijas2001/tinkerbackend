@@ -1,8 +1,12 @@
+const { type } = require("@testing-library/user-event/dist/type");
 const mongoose  = require("mongoose");
 
 // mongose conection
 const Users = mongoose.model('Users', {
-
+    id:{
+        type:Number,
+        required:true
+    },
     name: {
         type: String
     },

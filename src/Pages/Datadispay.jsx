@@ -19,25 +19,27 @@ const Datadispay = () => {
 
     const ImageWithToggleDiv = ({ item }) => {
         const [showDiv, setShowDiv] = useState(false);
-    
+
         const handleClick = () => {
             setShowDiv(!showDiv);
         };
-    
+
         return (
+
             <div className="imagebar" onClick={handleClick}>
-                <img id="clickableImage" className="imagefield" src={item.image} alt={item.name} />
+                <img id="clickableImage" className='imagefield' src={item.image} alt={item.name} />
                 {showDiv && (
                     <div id="redDiv">
-                        <Profile />
+                        <Profile userdetail={item}></Profile>
                     </div>
                 )}
             </div>
+
         );
     };
 
     return (
-        
+
         <div className='datadispay'>
             <Link style={{ textDecoration: "none" }} to={'/register'}><div className='backtoregister'>Back</div></Link>
             <div className='header'>
@@ -48,10 +50,10 @@ const Datadispay = () => {
                 {allusers.map((item, index) => (
                     <div key={index} >
                         <div className="content">
-                            <div className="imagebar">
-                                {/* <img  id="clickableImage"  className='imagefield' src={item.image} alt={item.name} /> */}
+                            {/* <div className="imagebar">
+                                <img  id="clickableImage"  className='imagefield' src={item.image} alt={item.name} />
+                            </div> */}
                                 <ImageWithToggleDiv item={item} />
-                            </div>
                             <div className="namefield">
                                 <p> {item.name}</p>
                             </div>
@@ -68,7 +70,7 @@ const Datadispay = () => {
             </div>
         </div>
     );
-    
+
 };
 
 export default Datadispay;
