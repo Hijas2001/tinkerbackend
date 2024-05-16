@@ -1,12 +1,23 @@
 
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect} from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Profile from '../components/Profile/Profile';
+
 
 
 
 const Datadispay = () => {
     const [allusers, setAllUsers] = useState([]);
+
+    const [showButton, setShowButton] = useState(true);
+
+
+    const navigate = useNavigate();
+
+    const buthandleClick = () => {
+        setShowButton(showButton);
+        navigate('/users');
+    };
 
     useEffect(() => {
 
@@ -15,13 +26,15 @@ const Datadispay = () => {
             .then(data => setAllUsers(data))
             .catch(error => console.error('Error fetching data:', error));
 
-    }, []); // Add dependency array to run useEffect only once
+    }, []);
+
+
 
     const ImageWithToggleDiv = ({ item }) => {
         const [showDiv, setShowDiv] = useState(false);
 
         const handleClick = () => {
-            setShowDiv(!showDiv);
+            setShowDiv(true);
         };
 
         return (
@@ -33,15 +46,19 @@ const Datadispay = () => {
                         <Profile userdetail={item}></Profile>
                     </div>
                 )}
+
             </div>
 
         );
     };
 
+
+
+
     return (
 
-        <div className='datadispay'>
-            <Link style={{ textDecoration: "none" }} to={'/register'}><div className='backtoregister'>Back</div></Link>
+        <div className='datadispay' >
+            <Link style={{ textDecoration: "none" }} onClick={buthandleClick} to={'/register'}><div className='backtoregister'>Back</div></Link>
             <div className='header'>
                 <h1>Learners Attendance</h1>
             </div>
@@ -53,7 +70,7 @@ const Datadispay = () => {
                             {/* <div className="imagebar">
                                 <img  id="clickableImage"  className='imagefield' src={item.image} alt={item.name} />
                             </div> */}
-                                <ImageWithToggleDiv item={item} />
+                            <ImageWithToggleDiv key={item.id} item={item} />
                             <div className="namefield">
                                 <p> {item.name}</p>
                             </div>

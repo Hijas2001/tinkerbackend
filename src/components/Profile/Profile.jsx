@@ -6,29 +6,34 @@ const Profile = (props) => {
 
     return (
         <div id="mainbar">
-
-
-            <div id='backbuttonname'>
-                <Link style={{ textDecoration: "none" }} to={'/users'}><div id='backtoregister'>Back</div></Link>
-
+            <div id='mainfulldata'>
+                <Link style={{ textDecoration: "none", cursor: 'pointer' }} to={'/users'}><div id='backtoregister'>Back</div></Link>
                 <div id="content">
                     <div id="namefield">
                         <p>{userdetail.name}</p>
                     </div>
-                    <hr />
-                    <div id="imagebar">
-
-                        <img id='imagefield' src={userdetail.image} alt={userdetail.name} />
-                    </div>
-                    <div id='detailsinpara'>
-                        <div id="domain">
-                            <p> Person : {userdetail.person}</p>
+                    {/* <hr /> */}
+                    <div className='imagedetaile'>
+                        <div id="imagebar">
+                            <img id='imagefield' src={userdetail.image} alt={userdetail.name} />
                         </div>
-                        <div id="description">
-                            <p>Github : {userdetail.github}</p>
-                        </div>
-                        <div id="description">
-                            <p>Domain : {userdetail.domain}</p>
+                        <div id='detailsinpara'>
+                            <div className="fielddesc">
+                                <p><span> Person : </span>{userdetail.person}</p>
+                            </div>
+                            <div className="fielddesc">
+                                <p><span>Github : </span>{userdetail.github}</p>
+                            </div>
+                            <div className="fielddesc">
+                                <p><span>Domain : </span>{userdetail.domain}</p>
+                            </div>
+                            <div className="fielddesc">
+                                <span>How can TinkerSpace assist you in your professional development? : </span>
+                                <p>{userdetail.assist}</p>
+                            </div>
+                            <div className="fielddesc">
+                                <p><span>Join Date : </span>{userdetail.date}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
